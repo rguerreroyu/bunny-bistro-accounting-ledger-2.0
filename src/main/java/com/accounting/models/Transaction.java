@@ -6,10 +6,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
+    private int transactionId;
     private LocalDateTime dateAndTime;
     private String description;
     private String vendor;
     private double amount;
+    private boolean isDeposit;
 
     // *** CONSTRUCTORS ***
 
@@ -20,14 +22,21 @@ public class Transaction {
      * @param vendor The vendor of the transaction.
      * @param amount The value of the transaction.
      */
-    public Transaction(LocalDateTime dateAndTime, String description, String vendor, double amount) {
+    public Transaction(int transactionId, LocalDateTime dateAndTime, String description, String vendor, double amount, boolean isDeposit) {
+        this.transactionId = transactionId;
         this.dateAndTime = dateAndTime;
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
+        this.isDeposit = isDeposit;
     }
 
     // *** GETTERS ***
+
+
+    public int getTransactionId() {
+        return transactionId;
+    }
 
     /**
      * Returns the date and time of the transaction.
@@ -77,7 +86,15 @@ public class Transaction {
         return amount;
     }
 
+    public boolean isDeposit() {
+        return isDeposit;
+    }
+
     // *** SETTERS ***
+
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
+    }
 
     /**
      * Sets the date and time.
@@ -109,6 +126,10 @@ public class Transaction {
      */
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public void setDeposit(boolean deposit) {
+        isDeposit = deposit;
     }
 
     // *** OTHER ***
@@ -165,22 +186,5 @@ public class Transaction {
                 getDate().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")),
                 getTime().format(DateTimeFormatter.ofPattern("h:mm:ss a")),
                 description, vendor, formatAmount);
-    }
-
-    /**
-     * Returns a string in the following format for CSV file:
-     * date|time|description|vendor|amount
-     *
-     * @return A compact CSV String of the transaction details.
-     */
-    public String toCsvString() {
-        StringBuilder sb = new StringBuilder();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd\"|\"HH:mm:ss");
-
-        //append in 24-hour time for clarity when reading file
-        sb.append("\"").append(formatter.format(dateAndTime)).append("\"|\"").append(description).append("\"|\"")
-                .append(vendor).append(String.format("\"|\"%.2f\"", amount));
-
-        return sb.toString();
     }
 }
