@@ -1,8 +1,5 @@
 package com.accounting.models;
 
-import com.accounting.CSVFileManager;
-import com.accounting.Transaction;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,12 +8,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class TransactionList {
-    private List<com.accounting.Transaction> transactions = new ArrayList<>();
+    private List<OldTransaction> transactions = new ArrayList<>();
 
     /**
      * Comparator that sorts by most recent, used in all display & report methods.
      */
-    private final Comparator<com.accounting.Transaction> SORT_BY_MOST_RECENT =
+    private final Comparator<OldTransaction> SORT_BY_MOST_RECENT =
             (t1, t2) -> -1 * t1.getDateAndTime().compareTo(t2.getDateAndTime());
 
     // *** GENERAL METHODS ***
@@ -28,7 +25,7 @@ public class TransactionList {
      * @param amount double
      */
     public void addTransaction(String description, String vendor, double amount) {
-        com.accounting.Transaction t = new com.accounting.Transaction(LocalDateTime.now(), description, vendor, amount);
+        OldTransaction t = new OldTransaction(LocalDateTime.now(), description, vendor, amount);
         transactions.add(t);
         System.out.println("\nThe following transaction has been added:\n" + t.toDescriptiveString());
     }
@@ -73,7 +70,7 @@ public class TransactionList {
      */
     public void displayAllDeposits() {
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: positive amounts
                 .filter(t -> t.getAmount() > 0)
                 .toList();
@@ -87,7 +84,7 @@ public class TransactionList {
                     .forEach(System.out::println);
 
             double total = 0;
-            for (com.accounting.Transaction t : matchingTransactions) {
+            for (OldTransaction t : matchingTransactions) {
                 total += t.getAmount();
             }
             System.out.printf("\n📈 Total: +$%.2f\n", total);
@@ -99,7 +96,7 @@ public class TransactionList {
      */
     public void displayAllPayments() {
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: negative amounts
                 .filter(t -> t.getAmount() < 0)
                 .toList();
@@ -113,7 +110,7 @@ public class TransactionList {
                     .forEach(System.out::println);
 
             double total = 0;
-            for (com.accounting.Transaction t : matchingTransactions) {
+            for (OldTransaction t : matchingTransactions) {
                 total += Math.abs(t.getAmount());
             }
             System.out.printf("\n📉 Total: -$%.2f\n", total);
@@ -129,7 +126,7 @@ public class TransactionList {
         LocalDate first_day_of_month = LocalDate.now().withDayOfMonth(1);
 
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: curr month/01/curr year <= date
                 .filter(t -> !t.getDate().isBefore(first_day_of_month))
                 .toList();
@@ -154,7 +151,7 @@ public class TransactionList {
         LocalDate first_day_of_prev_month = LocalDate.now().withDayOfMonth(1).minusMonths(1);
 
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: prev month/01 <= date < curr month/01 (curr year)
                 .filter(t -> t.getDate().isBefore(first_day_of_curr_month)
                         && !t.getDate().isBefore(first_day_of_prev_month))
@@ -179,7 +176,7 @@ public class TransactionList {
         LocalDate first_day_of_curr_year = LocalDate.of(LocalDate.now().getYear(), 1, 1);
 
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: 01/01/curr year <= date
                 .filter(t -> !t.getDate().isBefore(first_day_of_curr_year))
                 .toList();
@@ -204,7 +201,7 @@ public class TransactionList {
         LocalDate last_day_of_prev_year = LocalDate.of(LocalDate.now().getYear() - 1, 12, 31);
 
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: 01/01/prev year <= date <= 12/31/prev year
                 .filter(t -> !t.getDate().isAfter(last_day_of_prev_year)
                         && !t.getDate().isBefore(first_day_of_prev_year))
@@ -227,7 +224,7 @@ public class TransactionList {
      */
     public void searchByVendor(String vendorToSearch) {
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = transactions.stream()
+        List<OldTransaction> matchingTransactions = transactions.stream()
                 //filters based on: matching vendor
                 .filter(t -> t.getVendor().toLowerCase().contains(vendorToSearch.toLowerCase()))
                 .toList();
@@ -251,7 +248,7 @@ public class TransactionList {
      */
     public void customSearch(LocalDate startDate, LocalDate endDate, String description,
                              String vendor, String depositOrPayment, double minAmount, double maxAmount) {
-        Stream<com.accounting.Transaction> tempStream = transactions.stream();
+        Stream<OldTransaction> tempStream = transactions.stream();
 
         // --> for each if statement, checks if user left "blank" by checking default values
 
@@ -295,7 +292,7 @@ public class TransactionList {
         }
 
         //collect matching results into list to check if empty
-        List<com.accounting.Transaction> matchingTransactions = tempStream.toList();
+        List<OldTransaction> matchingTransactions = tempStream.toList();
 
         if (matchingTransactions.isEmpty()) {
             System.out.println("No matching transactions found.");
@@ -316,7 +313,7 @@ public class TransactionList {
      * Displays the total number of deposits/payments, total amounts, and overall income.
      * @param transToDisplay a list of filtered Transactions to display the total of
      */
-    private void displayAllTotals(List<com.accounting.Transaction> transToDisplay) {
+    private void displayAllTotals(List<OldTransaction> transToDisplay) {
         //determine total earnings & payments
         int numDeposits = 0;
         int numPayments = 0;
@@ -324,7 +321,7 @@ public class TransactionList {
         double expenses = 0;
 
         //calculate totals
-        for (Transaction t : transToDisplay) {
+        for (OldTransaction t : transToDisplay) {
             if (t.getAmount() > 0) {
                 numDeposits += 1;
                 revenue += t.getAmount();
