@@ -1,15 +1,21 @@
-# Bunny Bistro Accounting Ledger 🍵₊˚⊹
-> **Capstone 1: Accounting Ledger App**
+# Bunny Bistro Accounting Ledger 2.0 🍵₊˚⊹
+> **Capstone 1: Accounting Ledger App Revised**
 > 
 > Year Up United (Bay Bytes) - _Technical Academy Fall 2025_
 ---
 
 ## 🐰 Description
 
-An accounting ledger app interactable through the console, designed for a fictional cafe named "Bunny Bistro."
+A revised version of the first accounting ledger app. Interactable through the console, designed for a fictional cafe named "Bunny Bistro."
 This tool helps the cafe efficiently track their financial activity.
 
 Built entirely in Java to practice application development, specifically to gain familiarity with streams, enums, file structure, and robust error-handling.
+
+## 🛠️ Updates
+- Transferred CSV File transaction data into an SQL Database
+- Integrated SQL DataBase with the application
+- Improved Project Structure
+
 
 ### 🗝️ Key Features
 
@@ -51,7 +57,7 @@ It was both challenging and fun to find a workaround to checking whether my stre
 
 ---
 
-## 📁 File Structure
+## 📁 First File Structure
 ```
 src/
 ├── main/
@@ -73,7 +79,47 @@ src/
 │   └── resources/
 │       └── transactions.csv
 ```
+## 📁 New File Structure
+```
+src/
+├── main/
+│   ├── java/
+│   │   ├── com.accounting/
+│   │   │   ├── BunnyBistroAccountingLedgerApplication.java   // Spring Boot entry point
+│   │   │
+│   │   │   ├── configurations/
+│   │   │   │   └── DataBaseConfig.java                        // database configuration
+│   │   │
+│   │   │   ├── controllers/
+│   │   │   │   ├── ProfileController.java                    // profile REST endpoints
+│   │   │   │   ├── TransactionController.java                // transaction REST endpoints
+│   │   │   │   └── UserController.java                       // user/auth REST endpoints
+│   │   │
+│   │   │   ├── data/
+│   │   │   │   ├── mysql/
+│   │   │   │   │   ├── ProfileDao.java                       // profile DAO
+│   │   │   │   │   ├── TransactionDao.java                   // transaction DAO
+│   │   │   │   │   └── UserDao.java                          // user DAO
+│   │   │
+│   │   │   ├── models/
+│   │   │   │   ├── authentication/
+│   │   │   │   ├── Profile.java                              // profile model
+│   │   │   │   ├── Transaction.java                          // transaction model
+│   │   │   │   └── User.java                                 // user model
+│   │   │
+│   │   │   ├── security/
+│   │   │   │   ├── jwt/
+│   │   │   │   │   ├── JwtAccessDeniedHandler.java           // JWT access handling
+│   │   │   │   │   ├── JwtAuthenticationEntryPoint.java     // unauthorized handler
+│   │   │   │   │   ├── SecurityUtils.java                   // security helpers
+│   │   │   │   │   └── UserModelDetailsService.java         // user details service
+│   │   │   │   │
+│   │   │   │   ├── UserNotActivatedException.java           // custom auth exception
+│   │   │   │   └── WebSecurityConfig.java                   // Spring Security config
+│   └── resources/
+│       └── application.properties
 
+```
 ---
 
 ## 📸 Screenshots
