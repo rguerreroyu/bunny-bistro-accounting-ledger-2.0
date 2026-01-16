@@ -92,6 +92,39 @@ public class MySqlTransactionDao extends MySqlDaoBase implements TransactionDao 
     }
 
     @Override
+    public Transaction create(Transaction transaction) {
+        String sql = """
+                INSERT INTO transactions (transaction_time, description, vendor, amount, is_deposit)
+                VALUES (?, ?, ?, ?);
+                """;
+
+        boolean deposit = transaction.getAmount() >= 0;
+        double absAmount = Math.abs(transaction.getAmount());
+
+        try (Connection connection = getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setTimestamp(1, Timestamp.valueOf(transaction.getDateAndTime()));
+            ps.setString(2, transaction.getDescription());
+            ps.setString(3, transaction.getVendor());
+            ps.setDouble(4, absAmount);
+            ps.setBoolean(5, deposit);
+
+            ps.executeUpdate();
+
+            int newId = 0;
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    newId = keys.getInt(1);
+                }
+            }
+
+            return new Transaction(newId, transaction.getDateAndTime(), transaction.getDescription(), transaction.getVendor(), transaction.getAmount(), transaction.isDeposit());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void update(int transactionId, Transaction transaction) {
         String sql = """
                 UPDATE transactions

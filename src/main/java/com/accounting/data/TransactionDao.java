@@ -8,6 +8,7 @@ public interface TransactionDao {
     public List<Transaction> getAllTransactions();
     public List<Transaction> getAllDeposits();
     public List<Transaction> getAllPayments();
+    public Transaction create(Transaction transaction);
     public void update(int transactionId, Transaction transaction);
     public void delete(int transactionId);
 
