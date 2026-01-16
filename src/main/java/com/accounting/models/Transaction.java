@@ -11,6 +11,7 @@ public class Transaction {
     private String vendor;
     private double amount;
 
+
     // *** CONSTRUCTORS ***
 
     /**
@@ -25,6 +26,9 @@ public class Transaction {
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
+
+    }
+
     }
 
     // *** GETTERS ***
